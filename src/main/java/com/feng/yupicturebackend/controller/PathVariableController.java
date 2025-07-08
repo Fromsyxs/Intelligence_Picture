@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.feng.yupicturebackend.demos.web;
+package com.feng.yupicturebackend.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

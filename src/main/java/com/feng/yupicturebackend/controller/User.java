@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.feng.yupicturebackend.demos.web;
+package com.feng.yupicturebackend.controller;
 
 /**
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>

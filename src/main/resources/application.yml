@@ -1,6 +1,43 @@
+# 端口号；访问地址：localhost:8123/api
+server:
+  port: 8123
+  servlet:
+    context-path: /api
 spring:
+  application:
+    name: yu-picture-backend
+  # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306
+    url: jdbc:mysql://localhost:3306/intelligence_picture
     username: root
     password:
+mybatis-plus:
+  configuration:
+    # mybatis 配置
+    map-underscore-to-camel-case: false
+    # 开发环境打印日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 全局逻辑删除的实体字段
+      logic-delete-field: isDelete
+      # 逻辑已删除值（默认为 1）
+      logic-delete-value: 1
+      # 逻辑未删除值（默认为 0）
+      logic-not-delete-value: 0
+# 接口文档配置
+knife4j:
+  enable: true
+  openapi:
+    title: 智能云图库官方文档
+    concat: 缘在风里
+    # aaa"
+    version: v1.0
+    group:
+      default:
+        group-name: 默认分组
+        api-rule: package
+        api-rule-resources:
+          - com.feng.yupicturebackend.controller
+
