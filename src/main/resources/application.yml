@@ -1,6 +1,6 @@
-# 端口号；访问地址：localhost:8123/api
+# 端口号；访问地址：localhost:8101/api
 server:
-  port: 8123
+  port: 8101
   servlet:
     context-path: /api
 spring:
