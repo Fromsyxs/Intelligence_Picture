@@ -1,12 +1,16 @@
 package com.feng.yupicturebackend.service;
 
-import com.feng.yupicturebackend.model.dto.UserLoginRequest;
-import com.feng.yupicturebackend.model.dto.UserRegisterRequest;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.feng.yupicturebackend.model.dto.user.UserLoginRequest;
+import com.feng.yupicturebackend.model.dto.user.UserQueryRequest;
+import com.feng.yupicturebackend.model.dto.user.UserRegisterRequest;
 import com.feng.yupicturebackend.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.feng.yupicturebackend.model.vo.LoginUserVO;
+import com.feng.yupicturebackend.model.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author 15298
@@ -52,4 +56,34 @@ public interface UserService extends IService<User> {
      * @return user
      */
     User getLoginUser(HttpServletRequest request);
+
+    /**
+     * 用户注销
+     * @param request 用户注销req
+     * @return 用户脱敏后的数据
+     */
+    Boolean userLogout(HttpServletRequest request);
+
+    /**
+     * 获取脱敏后的用户信息
+     * @param user user
+     * @return userVO
+     */
+    UserVO getUserVO(User user);
+
+    /**
+     * 获取脱敏后的用户信息列表
+     * @param user user
+     * @return userVO
+     */
+    List<UserVO> getUserVOList(List<User> user);
+
+    /**
+     * 获取查询条件
+     * @param userQueryRequest userQueryRequest
+     * @return QueryWrapper<User>
+     */
+    QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
+
+
 }
