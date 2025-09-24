@@ -1,17 +1,20 @@
 package com.feng.yupicturebackend.service.imp;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.feng.yupicturebackend.constant.UserConstant;
 import com.feng.yupicturebackend.exception.BusinessException;
 import com.feng.yupicturebackend.exception.ErrorCode;
-import com.feng.yupicturebackend.model.dto.UserLoginRequest;
-import com.feng.yupicturebackend.model.dto.UserRegisterRequest;
+import com.feng.yupicturebackend.model.dto.user.UserLoginRequest;
+import com.feng.yupicturebackend.model.dto.user.UserQueryRequest;
+import com.feng.yupicturebackend.model.dto.user.UserRegisterRequest;
 import com.feng.yupicturebackend.model.entity.User;
 import com.feng.yupicturebackend.model.enums.UserRoleEnum;
 import com.feng.yupicturebackend.model.vo.LoginUserVO;
+import com.feng.yupicturebackend.model.vo.UserVO;
 import com.feng.yupicturebackend.service.UserService;
 import com.feng.yupicturebackend.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.feng.yupicturebackend.constant.UserConstant.USER_LOGIN_STATE;
 
@@ -166,6 +174,65 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         return currentUser;
     }
+
+    @Override
+    public Boolean getLogout(HttpServletRequest request) {
+        try {
+            Object userOjb = request.getSession().getAttribute(USER_LOGIN_STATE);
+            // 移除登录态
+            request.getSession().removeAttribute(USER_LOGIN_STATE);
+            return true;
+        } catch (BusinessException e) {
+            log.warn("UserServiceImpl#getLogout business exception", e);
+            return false;
+        } catch (Exception e) {
+            log.warn("UserServiceImpl#getLogout exception", e);
+            return false;
+        }
+    }
+
+    @Override
+    public UserVO getUserVO(User user) {
+        if (user == null) {
+            return null;
+        }
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        return userVO;
+    }
+
+    @Override
+    public List<UserVO> getListUserVO(List<User> userList) {
+        if (CollUtil.isEmpty(userList)) {
+            return new ArrayList<>();
+        }
+        return userList.stream()
+                .map(this::getUserVO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest) {
+        if (userQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
+        }
+        Long id = userQueryRequest.getId();
+        String userAccount = userQueryRequest.getUserAccount();
+        String userName = userQueryRequest.getUserName();
+        String userProfile = userQueryRequest.getUserProfile();
+        String userRole = userQueryRequest.getUserRole();
+        String sortField = userQueryRequest.getSortField();
+        String sortOrder = userQueryRequest.getSortOrder();
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(ObjUtil.isNotNull(id), "id", id);
+        queryWrapper.eq(StrUtil.isNotBlank(userRole), "userRole", userRole);
+        queryWrapper.like(StrUtil.isNotBlank(userAccount), "userAccount", userAccount);
+        queryWrapper.like(StrUtil.isNotBlank(userName), "userName", userName);
+        queryWrapper.like(StrUtil.isNotBlank(userProfile), "userProfile", userProfile);
+        queryWrapper.orderBy(StrUtil.isNotEmpty(sortField), "ascend".equals(sortOrder), sortField);
+        return queryWrapper;
+    }
+
 
     /**
      * 获取加密后的密码

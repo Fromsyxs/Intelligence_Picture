@@ -1,12 +1,16 @@
 package com.feng.yupicturebackend.service;
 
-import com.feng.yupicturebackend.model.dto.UserLoginRequest;
-import com.feng.yupicturebackend.model.dto.UserRegisterRequest;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.feng.yupicturebackend.model.dto.user.UserLoginRequest;
+import com.feng.yupicturebackend.model.dto.user.UserQueryRequest;
+import com.feng.yupicturebackend.model.dto.user.UserRegisterRequest;
 import com.feng.yupicturebackend.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.feng.yupicturebackend.model.vo.LoginUserVO;
+import com.feng.yupicturebackend.model.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author 15298
@@ -40,7 +44,7 @@ public interface UserService extends IService<User> {
     String getEntryPassword(String userPassword);
 
     /**
-     * 获取脱敏类的用户信息
+     * 获取脱敏类的登录用户信息
      * @param user 用户
      * @return 脱敏后的用户信息
      */
@@ -52,4 +56,32 @@ public interface UserService extends IService<User> {
      * @return user
      */
     User getLoginUser(HttpServletRequest request);
+
+    /**
+     * 用户登出
+     * @param request 登出请求
+     * @return true/false
+     */
+    Boolean getLogout(HttpServletRequest request);
+
+    /**
+     * 获取脱敏类的用户信息
+     * @param user 用户
+     * @return 脱敏后的用户信息
+     */
+    UserVO getUserVO(User user);
+
+    /**
+     * 批量获取脱敏类的用户信息
+     * @param userList 用户列表
+     * @return 脱敏后的用户信息
+     */
+    List<UserVO> getListUserVO(List<User> userList);
+
+    /**
+     * 获取查询条件
+     * @param userQueryRequest req
+     * @return result
+     */
+    QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
 }
